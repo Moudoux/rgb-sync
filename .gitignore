@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# makepkg output (see arch/PKGBUILD)
+arch/pkg/
+arch/src/
+arch/*.pkg.tar.*
+
+# Editors and local tools
+.vscode/
+.idea/
+.claude/settings.local.json
+
+# OS
+.DS_Store

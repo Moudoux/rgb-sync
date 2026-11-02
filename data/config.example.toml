@@ -1,0 +1,15 @@
+# rgb-sync configuration. Copy to ~/.config/rgb-sync/config.toml.
+#
+# Colour correction: [R, G, B] factors (0.0 and up) applied to a colour before
+# it is sent to a device zone. Use it when LEDs render the same colour as a
+# different shade. Zones per device are listed by `rgb list`; single-zone
+# devices use "all", and on multi-zone devices "all" covers every zone that
+# has no entry of its own.
+
+[correction.corsair]
+# The H115i Platinum pump head's blue LEDs are much weaker than its red and
+# green ones, so white looks yellow next to the fans.
+pump = [0.12, 0.15, 1.0]
+
+# [correction.aura]
+# all = [1.0, 1.0, 1.0]

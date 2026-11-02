@@ -1,0 +1,34 @@
+# Local package for rgb-sync. Build from this directory with `makepkg -si`.
+#
+# This lives in arch/ rather than the project root because makepkg uses a
+# src/ directory next to the PKGBUILD as its build area and deletes it at the
+# start of each build: in the root, that would be the project's own src/.
+
+pkgname=rgb-sync
+pkgver=0.3.1
+pkgrel=1
+pkgdesc="Set PC RGB lighting (Razer Firefly, ASUS Aura, Corsair H115i Platinum) and follow the KDE accent colour"
+arch=(any)
+license=(GPL-2.0-or-later)
+depends=(python python-jeepney liquidctl)
+
+_root="$startdir/.."
+
+package() {
+  local lib="$pkgdir/usr/lib/rgb-sync"
+
+  cd "$_root/src"
+  find . -name '*.py' -not -path '*/__pycache__/*' -exec install -Dm644 {} "$lib/{}" \;
+  /usr/bin/python3 -m compileall -q -d /usr/lib/rgb-sync "$lib"
+
+  # The script's shebang uses uv; the packaged command runs it with the
+  # system Python and the dependencies pacman installed instead.
+  install -dm755 "$pkgdir/usr/bin"
+  printf '#!/bin/sh\nexec /usr/bin/python3 /usr/lib/rgb-sync/rgb.py "$@"\n' > "$pkgdir/usr/bin/rgb"
+  chmod 755 "$pkgdir/usr/bin/rgb"
+
+  install -Dm644 "$_root/data/70-rgb-sync.rules" "$pkgdir/usr/lib/udev/rules.d/70-rgb-sync.rules"
+  install -Dm644 "$_root/data/rgb-sync.service" "$pkgdir/usr/lib/systemd/user/rgb-sync.service"
+  install -Dm644 "$_root/README.md" "$pkgdir/usr/share/doc/rgb-sync/README.md"
+  install -Dm644 "$_root/data/config.example.toml" "$pkgdir/usr/share/doc/rgb-sync/config.example.toml"
+}
